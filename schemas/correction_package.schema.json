@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Correction Package",
+  "description": "quality-control/correction_package.json — actionable corrections for one QC round.",
+  "type": "object",
+  "required": ["round", "based_on_render", "corrections", "regressions_checked"],
+  "properties": {
+    "round": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "based_on_render": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string" },
+    "corrections": {
+      "type": "array", "minItems": 1,
+      "items": { "type": "object",
+                 "required": ["defect_id", "timestamp", "scene_id", "severity",
+                              "category", "description", "required_correction",
+                              "expected_result", "affected_engine", "verification"],
+                 "properties": {
+                   "defect_id": { "type": "string", "pattern": "^DEFECT-[0-9]{3}$" },
+                   "timestamp": { "type": "string", "minLength": 1 },
+                   "scene_id": { "type": ["string", "null"] },
+                   "severity": { "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
+                   "category": { "type": "string", "minLength": 1 },
+                   "description": { "type": "string", "minLength": 1 },
+                   "evidence": { "type": "string" },
+                   "root_cause": { "type": "string" },
+                   "required_correction": { "type": "string", "minLength": 1 },
+                   "expected_result": { "type": "string", "minLength": 1 },
+                   "affected_engine": { "enum": ["hyperframes", "lemo-opuscar", "ffmpeg-assembly", "none"] },
+                   "verification": { "type": "string", "minLength": 1 }
+                 } }
+    },
+    "regressions_checked": {
+      "type": "array",
+      "items": { "type": "object",
+                 "required": ["defect_id", "result"],
+                 "properties": {
+                   "defect_id": { "type": "string", "pattern": "^DEFECT-[0-9]{3}$" },
+                   "result": { "enum": ["VERIFIED_FIXED", "NOT_FIXED", "REGRESSION", "WONT_FIX"] },
+                   "evidence": { "type": "string" }
+                 } }
+    },
+    "reprocess_scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "scene IDs or assembly steps to re-render"
+    },
+    "round_limit_reached": { "type": "boolean" },
+    "manual_intervention_required": { "type": ["string", "null"] }
+  }
+}

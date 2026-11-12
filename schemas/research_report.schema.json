@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Research Report",
+  "description": "Machine form of research/claims.json + sources.json integrity.",
+  "type": "object",
+  "required": ["topic", "sources", "claims"],
+  "properties": {
+    "topic": { "type": "string", "minLength": 1 },
+    "web_research_available": { "type": "boolean" },
+    "limitations": { "type": "string" },
+    "sources": {
+      "type": "array",
+      "items": { "type": "object",
+                 "required": ["id", "title", "credibility", "url_or_origin"],
+                 "properties": {
+                   "id": { "type": "string", "pattern": "^SRC-[0-9]{3}$" },
+                   "title": { "type": "string", "minLength": 1 },
+                   "author_publisher": { "type": "string" },
+                   "url_or_origin": { "type": "string", "minLength": 1 },
+                   "publication_date": { "type": "string" },
+                   "accessed_date": { "type": "string" },
+                   "type": { "enum": ["primary", "secondary", "tertiary", "user_provided"] },
+                   "credibility": { "enum": ["high", "medium", "low", "unknown"] },
+                   "used_for": { "type": "array", "items": { "type": "string" } }
+                 } }
+    },
+    "claims": {
+      "type": "array",
+      "items": { "type": "object",
+                 "required": ["id", "claim", "status", "type", "source_ids"],
+                 "properties": {
+                   "id": { "type": "string", "pattern": "^CLAIM-[0-9]{3}$" },
+                   "claim": { "type": "string", "minLength": 1 },
+                   "status": { "enum": ["VERIFIED", "PARTIALLY_VERIFIED", "DISPUTED",
+                                        "UNVERIFIED", "FALSE", "UNKNOWN"] },
+                   "type": { "enum": ["historical_fact", "interpretation",
+                                      "allegation", "creative_reconstruction"] },
+                   "source_ids": { "type": "array", "items": { "type": "string" } },
+                   "notes": { "type": "string" },
+                   "conflicts_with": { "type": "array", "items": { "type": "string" } }
+                 } }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Documentary Script",
+  "description": "Machine form of script/narration.json — narration segments bound to scenes.",
+  "type": "object",
+  "required": ["title", "language", "speaking_rate_wpm", "segments"],
+  "properties": {
+    "title": { "type": "string", "minLength": 1 },
+    "language": { "type": "string" },
+    "speaking_rate_wpm": { "type": "number", "minimum": 60 },
+    "central_question": { "type": "string" },
+    "hook_summary": { "type": "string" },
+    "ending_summary": { "type": "string" },
+    "segments": {
+      "type": "array", "minItems": 1,
+      "items": { "type": "object",
+                 "required": ["id", "scene_id", "text", "word_count",
+                              "estimated_duration_sec", "visual_purpose"],
+                 "properties": {
+                   "id": { "type": "string", "pattern": "^NARR-[0-9]{3}$" },
+                   "scene_id": { "type": "string", "pattern": "^SCENE-[0-9]{3}$" },
+                   "text": { "type": "string", "minLength": 1 },
+                   "word_count": { "type": "integer", "minimum": 1 },
+                   "estimated_duration_sec": { "type": "number", "minimum": 0.5 },
+                   "planned_start_sec": { "type": "number", "minimum": 0 },
+                   "planned_end_sec": { "type": "number", "minimum": 0 },
+                   "visual_purpose": { "type": "string", "minLength": 1 },
+                   "emotional_intention": { "type": "string" },
+                   "sound_design": { "type": "string" },
+                   "transition_out": { "type": "string" },
+                   "voice": { "type": "string" },
+                   "engine": { "enum": ["kokoro", "edge-tts"] },
+                   "status": { "enum": ["PENDING", "GENERATED", "VERIFIED", "TIMED"] },
+                   "output_file": { "type": "string" },
+                   "measured_duration_sec": { "type": "number", "minimum": 0 }
+                 } }
+    }
+  }
+}

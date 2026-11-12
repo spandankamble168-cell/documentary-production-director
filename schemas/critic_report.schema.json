@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Critic Report",
+  "description": "quality-control/critic_report.json — scored inspection of an actual render.",
+  "type": "object",
+  "required": ["render_file", "render_round", "inspection", "scores", "defects"],
+  "properties": {
+    "render_file": { "type": "string", "minLength": 1 },
+    "render_round": { "type": "integer", "minimum": 1 },
+    "inspected_at": { "type": "string" },
+    "inspection": {
+      "type": "object",
+      "required": ["video_metadata", "frames_extracted", "contact_sheet", "audio_analysis"],
+      "properties": {
+        "video_metadata": { "type": "string", "minLength": 1,
+                            "description": "path to video_metadata.json" },
+        "frames_extracted": { "type": "integer", "minimum": 0 },
+        "frame_directory": { "type": "string" },
+        "contact_sheet": { "type": "string" },
+        "audio_analysis": { "type": "string" },
+        "visual_inspection": { "enum": ["PERFORMED", "NOT AVAILABLE", "PARTIAL"] },
+        "audio_listening": { "enum": ["PERFORMED", "NOT EVALUATED"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["visual_quality", "cinematography", "animation",
+                   "editing_and_pacing", "narration", "sound_design_and_audio",
+                   "story_to_visual_sync", "technical_quality", "total", "bands"],
+      "properties": {
+        "visual_quality": { "type": ["number", "null"], "minimum": 0, "maximum": 20 },
+        "cinematography": { "type": ["number", "null"], "minimum": 0, "maximum": 15 },
+        "animation": { "type": ["number", "null"], "minimum": 0, "maximum": 15 },
+        "editing_and_pacing": { "type": ["number", "null"], "minimum": 0, "maximum": 15 },
+        "narration": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
+        "sound_design_and_audio": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
+        "story_to_visual_sync": { "type": ["number", "null"], "minimum": 0, "maximum": 10 },
+        "technical_quality": { "type": ["number", "null"], "minimum": 0, "maximum": 5 },
+        "total": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+        "bands": {
+          "type": "object",
+          "properties": {
+            "visual_quality": { "type": ["string", "null"] },
+            "cinematography": { "type": ["string", "null"] },
+            "animation": { "type": ["string", "null"] },
+            "editing_and_pacing": { "type": ["string", "null"] },
+            "narration": { "type": ["string", "null"] },
+            "sound_design_and_audio": { "type": ["string", "null"] },
+            "story_to_visual_sync": { "type": ["string", "null"] },
+            "technical_quality": { "type": ["string", "null"] },
+            "total": { "type": ["string", "null"] }
+          }
+        }
+      },
+      "description": "null = NOT EVALUATED (with a reason in evidence)"
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "object",
+                 "required": ["category", "observation", "source"],
+                 "properties": {
+                   "category": { "type": "string" },
+                   "observation": { "type": "string", "minLength": 1 },
+                   "source": { "type": "string", "minLength": 1,
+                               "description": "frame filename, timestamp, or measurement" },
+                   "type": { "enum": ["observed", "measured"] }
+                 } }
+    },
+    "defects": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/defect" }
+    },
+    "comparison_with_previous": { "type": "string" },
+    "verdict": { "enum": ["APPROVED", "CORRECTIONS_REQUIRED", "MANUAL_INTERVENTION"] }
+  },
+  "definitions": {
+    "defect": {
+      "type": "object",
+      "required": ["defect_id", "timestamp", "scene_id", "severity", "category",
+                   "description", "evidence", "required_correction",
+                   "expected_result", "affected_engine", "verification"],
+      "properties": {
+        "defect_id": { "type": "string", "pattern": "^DEFECT-[0-9]{3}$" },
+        "timestamp": { "type": "string", "minLength": 1 },
+        "scene_id": { "type": ["string", "null"] },
+        "severity": { "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
+        "category": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "evidence": { "type": "string", "minLength": 1 },
+        "root_cause": { "type": "string" },
+        "required_correction": { "type": "string", "minLength": 1 },
+        "expected_result": { "type": "string", "minLength": 1 },
+        "affected_engine": { "enum": ["hyperframes", "lemo-opuscar", "ffmpeg-assembly", "none"] },
+        "verification": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["OPEN", "CLAIMED_FIXED", "VERIFIED_FIXED", "NOT_FIXED", "WONT_FIX"] }
+      }
+    }
+  }
+}

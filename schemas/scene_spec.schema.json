@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scene Specification",
+  "description": "Full production spec for a single scene (also embedded in storyboard/scenes.json).",
+  "type": "object",
+  "required": ["id", "duration_sec", "narration_ids", "environment", "camera",
+               "camera_movement", "composition", "lighting", "color_palette",
+               "animation", "sfx", "music", "transition", "engine", "expected_result"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^SCENE-[0-9]{3}$" },
+    "duration_sec": { "type": "number", "minimum": 0.5 },
+    "narration_ids": { "type": "array", "items": { "type": "string" } },
+    "environment": { "type": "string", "minLength": 1 },
+    "characters": {
+      "type": "array",
+      "items": { "type": "object",
+                 "required": ["description"],
+                 "properties": {
+                   "description": { "type": "string" },
+                   "position": { "type": "string" },
+                   "screen_direction": { "type": "string" },
+                   "consistency_notes": { "type": "string" }
+                 } }
+    },
+    "camera": { "type": "string", "minLength": 1 },
+    "camera_angle": { "type": "string" },
+    "camera_movement": { "type": "string", "minLength": 1 },
+    "movement_motivation": { "type": "string" },
+    "focal_length_or_fov": { "type": "string" },
+    "composition": { "type": "string", "minLength": 1 },
+    "lighting": { "type": "string", "minLength": 1 },
+    "color_palette": { "type": "string", "minLength": 1 },
+    "animation": { "type": "string", "minLength": 1 },
+    "foreground": { "type": "string" },
+    "background": { "type": "string" },
+    "atmosphere": { "type": "string" },
+    "sfx": { "type": "array", "items": { "type": "string" } },
+    "music": { "type": "string", "minLength": 1 },
+    "transition": { "type": "string", "minLength": 1 },
+    "engine": { "enum": ["hyperframes", "lemo-opuscar", "ffmpeg-assembly"] },
+    "render_command": { "type": "string" },
+    "source_location": { "type": "string" },
+    "output_path": { "type": "string" },
+    "resolution": { "type": "string" },
+    "fps": { "type": "number" },
+    "expected_result": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["PLANNED", "IN_PROGRESS", "RENDERED", "VERIFIED"] }
+  }
+}
